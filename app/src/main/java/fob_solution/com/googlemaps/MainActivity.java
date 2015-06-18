@@ -29,7 +29,7 @@ public class MainActivity extends FragmentActivity implements LocationListener {
     }
 
     private void initilizeMap() {
-        
+
     }
 
     @Override
