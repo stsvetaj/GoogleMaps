@@ -7,6 +7,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -16,7 +17,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 
-public class MainActivity extends FragmentActivity implements LocationListener {
+public class MainActivity extends FragmentActivity implements LocationListener, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener {
 
     GoogleMap googleMap;
 
@@ -45,7 +46,15 @@ public class MainActivity extends FragmentActivity implements LocationListener {
             // Enabling MyLocation Layer of Google Map
             googleMap.setMyLocationEnabled(true);
 
-            // Getting LocationManager object from System Service LOCATION_SERVICE
+            // Enabling Compass
+            googleMap.getUiSettings().setCompassEnabled(true);
+
+            // Gesture enabled
+            googleMap.getUiSettings().setRotateGesturesEnabled(true);
+
+            googleMap.setOnMapClickListener(this);
+            googleMap.setOnMapLongClickListener(this);
+
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
             // Creating a criteria object to retrieve provider
@@ -60,13 +69,13 @@ public class MainActivity extends FragmentActivity implements LocationListener {
             if(location!=null){
                 onLocationChanged(location);
             }
-            locationManager.requestLocationUpdates(provider, 20000, 0, this);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
         }
     }
     @Override
     public void onLocationChanged(Location location) {
 
-//        TextView tvLocation = (TextView) findViewById(R.id.tv_location);
+        TextView tvLocation = (TextView) findViewById(R.id.tv_location);
 
         // Getting latitude of the current location
         double latitude = location.getLatitude();
@@ -81,12 +90,14 @@ public class MainActivity extends FragmentActivity implements LocationListener {
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
         // Zoom in the Google Map
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+//        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
         // Setting latitude and longitude in the TextView tv_location
-//        tvLocation.setText("Latitude:" +  latitude  + ", Longitude:"+ longitude );
+        tvLocation.setText("Latitude: " +  latitude  + "\r\nLongitude: "+ longitude );
 
     }
+
+
 
     @Override
     public void onProviderDisabled(String provider) {
@@ -101,5 +112,15 @@ public class MainActivity extends FragmentActivity implements LocationListener {
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void onMapClick(LatLng point) {
+
+    }
+
+    @Override
+    public void onMapLongClick(LatLng point) {
+
     }
 }
